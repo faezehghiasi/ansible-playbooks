@@ -1,0 +1,14 @@
+---
+# Default timezone
+ntp_timezone: "Asia/Tehran"
+
+# Detect NTP package
+ntp_package: "{{ 'chrony'
+  if (ansible_os_family == 'RedHat' and ansible_distribution_major_version | int >= 8)
+  or (ansible_os_family == 'Debian' and ansible_distribution_major_version | int >= 10)
+  or (ansible_distribution | lower == 'ubuntu' and ansible_distribution_version is version('20.04', '>='))
+  else 'ntp' }}"
+
+# Auto-select service name and config path
+ntp_service: "{{ 'chronyd' if ntp_package == 'chrony' else 'ntpd' }}"
+ntp_config: "{{ '/etc/chrony.conf' if ntp_package == 'chrony' else '/etc/ntp.conf' }}"
