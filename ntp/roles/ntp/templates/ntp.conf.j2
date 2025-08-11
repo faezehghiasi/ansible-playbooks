@@ -1,0 +1,38 @@
+# Use public servers from the pool.ntp.org project.
+# Please consider joining the pool (https://www.pool.ntp.org/join.html).
+server 3.ir.pool.ntp.org iburst
+server 1.asia.pool.ntp.org iburst
+server 0.asia.pool.ntp.org iburst
+
+# Use NTP servers from DHCP (if your dhclient is configured for it)
+# Often managed via /etc/dhcp/dhclient.conf
+
+# Drift file to record clock drift
+driftfile /var/lib/ntp/drift
+
+# Step the clock if the offset is large at start
+tinker panic 0
+
+# Enable kernel synchronization of the real-time clock (RTC)
+# (This is handled automatically by ntpd in most systems)
+# You can add 'rtcsync' equivalent by using adjtimex system call internally (automatic)
+
+# Access Control: restrict default, allow only certain networks
+restrict default kod nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict ::1
+# Uncomment and adjust to allow LAN access:
+# restrict 192.168.0.0 mask 255.255.0.0 nomodify notrap
+
+# Statistics logging location
+statsdir /var/log/ntpstats/
+filegen loopstats  file loopstats  type day enable
+filegen peerstats  file peerstats  type day enable
+filegen clockstats file clockstats type day enable
+
+# Authentication keys file (uncomment if using authentication)
+# keys /etc/ntp/keys
+
+# Leap seconds configuration (optional if provided by tz database)
+# leapfile /usr/share/zoneinfo/leap-seconds.list
+
