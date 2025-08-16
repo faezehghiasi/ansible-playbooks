@@ -10,7 +10,8 @@
 
 - name: Set playbook path variable
   set_fact:
-    new_playbook_path: "{{ new_playbook_path_input.user_input | default(new_playbook_path) }}"
+    new_playbook_path: >-
+      {{ (new_playbook_path_input.user_input | default(lookup('env','HOME'), true)) | trim }}
   when: new_playbook_path_input is defined
   tags:
     - input
@@ -27,7 +28,8 @@
 
 - name: Set playbook name variable
   set_fact:
-    new_playbook_name: "{{ new_playbook_name_input.user_input | default(new_playbook_name) }}"
+    new_playbook_name: >-
+      {{ (new_playbook_name_input.user_input | default('new_playbook', true)) | trim }}
   when: new_playbook_name_input is defined
   tags:
     - input
@@ -83,7 +85,6 @@
     - roles
     - structure
 
-# FIX: This should create the main playbook file, not role files
 - name: Create main playbook file
   copy:
     dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/{{ new_playbook_name }}_playbook.yml"
@@ -110,7 +111,6 @@
     - files
     - playbook
 
-# FIX: Correct task name and add content to role files
 - name: Create role main.yml files
   copy:
     dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/roles/{{ item }}/main.yml"
