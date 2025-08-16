@@ -54,25 +54,5 @@ ntp_package: chrony
 ntp_config: /etc/chrony.conf
 ntp_service: chronyd
 ntp_timezone: "UTC"
-```
 
----
 
-## 🛠 Suggested Improvements
-- **common role**: SSH keys, base packages, firewall config.
-- **monitoring role**: Node Exporter, Telegraf.
-- **backup role**: rsync or restic automation.
-- Add `ansible.cfg` for project-level defaults.
-- `.gitignore` for temp files & secrets.
-- `molecule` tests for roles.
-- CI/CD with ansible-lint & yamllint.
-
----
-
-## 📜 License
-MIT License.
-
----
-
-## 👨‍💻 Author
-Your Name – DevOps Engineer & Automation Enthusiast
