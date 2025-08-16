@@ -1,4 +1,0 @@
-[myservers]
-192.168.76.33 ansible_user=root
-192.168.76.252 ansible_user=root
-

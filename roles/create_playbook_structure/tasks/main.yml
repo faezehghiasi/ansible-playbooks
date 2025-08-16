@@ -1,0 +1,146 @@
+---
+- name: Get path of new playbook
+  pause:
+    prompt: "Please enter the path of the new playbook (e.g., /home/user/ansible-projects)"
+  register: new_playbook_path_input
+  when: new_playbook_path is not defined
+  tags:
+    - input
+    - setup
+
+- name: Set playbook path variable
+  set_fact:
+    new_playbook_path: "{{ new_playbook_path_input.user_input | default(new_playbook_path) }}"
+  when: new_playbook_path_input is defined
+  tags:
+    - input
+    - setup
+
+- name: Get name of new playbook
+  pause:
+    prompt: "Please enter the name of the new playbook (e.g., my-awesome-playbook)"
+  register: new_playbook_name_input
+  when: new_playbook_name is not defined
+  tags:
+    - input
+    - setup
+
+- name: Set playbook name variable
+  set_fact:
+    new_playbook_name: "{{ new_playbook_name_input.user_input | default(new_playbook_name) }}"
+  when: new_playbook_name_input is defined
+  tags:
+    - input
+    - setup
+
+- name: Validate input variables
+  fail:
+    msg: "Both playbook path and name must be provided"
+  when: new_playbook_path is not defined or new_playbook_name is not defined or 
+        new_playbook_path == "" or new_playbook_name == ""
+  tags:
+    - validation
+    - setup
+
+- name: Create main project directory
+  file:
+    path: "{{ new_playbook_path }}/{{ new_playbook_name }}"
+    state: directory
+    mode: '0755'
+  tags:
+    - directories
+    - structure
+
+- name: Create inventory and roles directories
+  file:
+    path: "{{ new_playbook_path }}/{{ new_playbook_name }}/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - inventory
+    - roles
+    - group_vars
+    - host_vars
+  tags:
+    - directories
+    - structure
+
+- name: Create roles subdirectories
+  file:
+    path: "{{ new_playbook_path }}/{{ new_playbook_name }}/roles/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: 
+    - tasks
+    - handlers
+    - templates
+    - files
+    - defaults
+    - meta
+    - vars
+  tags:
+    - directories
+    - roles
+    - structure
+
+# FIX: This should create the main playbook file, not role files
+- name: Create main playbook file
+  copy:
+    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/{{ new_playbook_name }}_playbook.yml"
+    content: |
+      ---
+      - name: {{ new_playbook_name | title }} playbook
+        hosts: all
+        become: true
+        gather_facts: true
+        
+        vars:
+          # Define your variables here
+          
+        roles:
+          # Define your roles here
+          
+        tasks:
+          # Define your tasks here
+          - name: Example task
+            debug:
+              msg: "Hello from {{ new_playbook_name }} playbook!"
+    mode: '0644'
+  tags:
+    - files
+    - playbook
+
+# FIX: Correct task name and add content to role files
+- name: Create role main.yml files
+  copy:
+    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/roles/{{ item }}/main.yml"
+    content: |
+      ---
+      # {{ item | title }} for {{ new_playbook_name }}
+      # Add your {{ item }} here
+    mode: '0644'
+  loop: 
+    - tasks
+    - handlers
+    - defaults
+    - meta
+    - vars
+  tags:
+    - files
+    - roles
+
+- name: Create inventory files
+  copy:
+    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/inventory/{{ item }}"
+    content: |
+      # {{ item | title }} inventory for {{ new_playbook_name }}
+      # Add your hosts here
+    mode: '0644'
+  loop: 
+    - hosts.yml
+    - production
+    - staging
+    - development
+  tags:
+    - files
+    - inventory
