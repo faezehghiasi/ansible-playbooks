@@ -71,3 +71,10 @@
     state: enabled
     immediate: true
   tags: open_firewall_port
+
+
+- name: Start Tomcat service
+  systemd:
+    name: tomcat
+    state: started
+  tags: start_tomcat_service
