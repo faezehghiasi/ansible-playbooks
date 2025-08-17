@@ -3,4 +3,4 @@
 # Add your vars here
 tomcat_url: "https://downloads.apache.org/tomcat/tomcat-9/v9.0.108/bin/apache-tomcat-9.0.108.tar.gz"
 tomcat_path: "/opt/apache-tomcat-9.0.108"
-tomcat_port: "8080"
+tomcat_port: "80"

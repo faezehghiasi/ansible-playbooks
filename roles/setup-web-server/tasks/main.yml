@@ -38,3 +38,21 @@
     group: root
     mode: '0644'  
   tags: create_service_tomcat
+
+
+
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+  tags: reload_systemd
+
+
+
+- name: Configure Apache tomcat
+  template:
+    src: server.xml.j2
+    dest: /opt/tomcat/conf/server.xml
+  tags: configure_tomcat
+
+  
