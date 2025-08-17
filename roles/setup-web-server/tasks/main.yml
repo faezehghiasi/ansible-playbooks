@@ -10,21 +10,31 @@
 - name: Download Tomcat
   get_url:
     url: "{{ tomcat_url }}"
-    dest: "/tmp/apache-tomcat-9.0.108.tar.gz"
+    dest: "/opt"
   tags: download_tomcat
 
 
 - name: Extract Tomcat
   unarchive:
-    src: "/tmp/apache-tomcat-9.0.108.tar.gz"
-    dest: "{{ tomcat_path }}"
+    src: "{{ tomcat_path }}.tar.gz"
+    dest: "/opt"
     remote_src: yes
   tags: extract_tomcat
 
 
 - name: Create Tomcat soft link
   file:
-    src: "{{ tomcat_path }}/apache-tomcat-9.0.108"
-    dest: "{{ tomcat_path }}/current"
+    src: "{{ tomcat_path }}"
+    dest: "/opt/tomcat"
     state: link
   tags: create_softlink
+
+
+- name: Create Tomcat service
+  template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+    owner: root
+    group: root
+    mode: '0644'  
+  tags: create_service_tomcat
