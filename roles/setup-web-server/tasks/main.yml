@@ -1,0 +1,25 @@
+---
+- name: Install java
+  package:
+    name: java-1.8.0-openjdk
+    state: present
+  tags: install_java
+
+  
+
+- name: Download Tomcat
+  get_url:
+    url: "{{ tomcat_url }}"
+    dest: "/tmp/apache-tomcat-9.0.108.tar.gz"
+  tags: download_tomcat
+
+
+- name: Extract Tomcat
+  unarchive:
+    src: "/tmp/apache-tomcat-9.0.108.tar.gz"
+    dest: "{{ tomcat_path }}"
+    remote_src: yes
+  tags: extract_tomcat
+
+
+  
