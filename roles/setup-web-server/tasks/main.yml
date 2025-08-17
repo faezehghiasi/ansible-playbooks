@@ -55,4 +55,19 @@
     dest: /opt/tomcat/conf/server.xml
   tags: configure_tomcat
 
-  
+
+
+- name: Deploy web application
+  copy:
+    src: hello-world.war
+    dest: /opt/tomcat/webapps/hello-world.war
+  tags: deploy_webapp
+
+
+- name: Config firewall 
+  firewalld:
+    port: "{{tomcat_port}}/tcp"
+    zone: public
+    state: enabled
+    immediate: true
+  tags: open_firewall_port
