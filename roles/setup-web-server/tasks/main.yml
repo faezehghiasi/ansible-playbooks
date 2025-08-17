@@ -22,4 +22,9 @@
   tags: extract_tomcat
 
 
-  
+- name: Create Tomcat soft link
+  file:
+    src: "{{ tomcat_path }}/apache-tomcat-9.0.108"
+    dest: "{{ tomcat_path }}/current"
+    state: link
+  tags: create_softlink
