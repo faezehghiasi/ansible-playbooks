@@ -1,8 +1,2 @@
 ---
-- name: start_nfs_server
-  service:
-    name: "{{ nfs_server_service[ansible_facts['os_family']] }}"
-    state: started
-    enabled: true
-  tags: start_nfs_server
-  
+

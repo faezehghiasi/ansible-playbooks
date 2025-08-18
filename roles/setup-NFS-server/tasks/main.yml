@@ -29,5 +29,12 @@
   package:
     name: "{{ nfs_packages[ansible_facts['os_family']] }}"
     state: present
-  notify: start_nfs_server
   tags: install_nfs_packages
+
+
+- name: start nfs server
+  service:
+    name: "{{ nfs_server_service[ansible_facts['os_family']] }}"
+    state: started
+    enabled: true
+  tags: start_nfs_server

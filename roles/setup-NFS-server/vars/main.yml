@@ -3,7 +3,8 @@ nfs_packages:
   RedHat:
     - nfs-utils
   Debian:
-    - nfs-common
+    - nfs-kernel-server
+
 
 
 nfs_server_service:
