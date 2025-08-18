@@ -74,3 +74,16 @@
 - name: exportfs
   shell : "exportfs -arv"
   tags: exportfs
+
+
+
+- name: Mount the nfs
+  mount:
+    src: "{{ item }}:/shared_dir"
+    path: /shared_dir
+    opts: rw,sync,hard,intr
+    state: mounted
+    fstype: nfs
+  loop: "{{ groups.nfs_server }}"
+  when: server_role == 'nfsclient'
+  tags: mount_nfs
