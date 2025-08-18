@@ -32,9 +32,19 @@
   tags: install_nfs_packages
 
 
-- name: start nfs server
+- name: Start nfs server
   service:
     name: "{{ nfs_server_service[ansible_facts['os_family']] }}"
     state: started
     enabled: true
   tags: start_nfs_server
+
+
+- name : Create directory for NFS 
+  file:
+    path: /nfs_dir
+    state: directory
+    mode: '0755'
+    owner: nfsnobody
+    group: nfsnobody
+  tags: create_nfs_exports
