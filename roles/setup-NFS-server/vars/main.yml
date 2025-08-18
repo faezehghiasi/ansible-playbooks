@@ -1,3 +1,11 @@
 ---
-# Vars for setup-NFS-server
-# Add your vars here
+nfs_packages:
+  RedHat:
+    - nfs-utils
+  Debian:
+    - nfs-common
+
+
+nfs_server_service:
+  RedHat: nfs-server
+  Debian: nfs-kernel-server

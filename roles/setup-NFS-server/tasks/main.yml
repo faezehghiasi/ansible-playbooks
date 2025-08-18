@@ -25,5 +25,9 @@
   tags: configure_firewall
 
 
-
-  
+- name: Install NFS packages
+  package:
+    name: "{{ nfs_packages[ansible_facts['os_family']] }}"
+    state: present
+  notify: start_nfs_server
+  tags: install_nfs_packages
