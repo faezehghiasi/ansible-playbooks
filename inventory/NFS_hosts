@@ -1,5 +1,5 @@
 [nfs_server]
-192.168.189.33 server_role=nfsserver
+192.168.189.33 server_role=nfsserver 
 
 [nfs_client]
 192.168.189.252 server_role=nfsclient

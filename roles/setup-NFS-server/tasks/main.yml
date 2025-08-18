@@ -1,3 +1,19 @@
 ---
-# Tasks for setup-NFS-server
-# Add your tasks here
+- name: Configure the firewall
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+    zone: public
+  loop:
+    - nfs
+    - ssh
+  tags: configure_firewall
+
+
+
+  
+
+
+  
