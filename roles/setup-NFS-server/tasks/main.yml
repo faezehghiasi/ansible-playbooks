@@ -53,7 +53,7 @@
 
 - name: Configure /etc/exports on server
   lineinfile:
-    line: "/data1 {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
+    line: "/shared_dir {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
     path: /etc/exports
   with_items:
     - "{{ groups.nfs_client }}"
@@ -63,9 +63,14 @@
 
 - name: Configure /etc/exports on clients 
   lineinfile:
-    line: "/data1 {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
+    line: "/shared_dir {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
     path: /etc/exports
   with_items:
     - "{{ groups.nfs_server }}"
   when: server_role == 'nfsclient'
   tags: config_Client_exports
+
+
+- name: exportfs
+  shell : "exportfs -arv"
+  tags: exportfs
