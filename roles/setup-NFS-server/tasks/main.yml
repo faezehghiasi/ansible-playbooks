@@ -9,11 +9,21 @@
   loop:
     - nfs
     - ssh
+  when: ansible_os_family == "RedHat"
   tags: configure_firewall
 
 
 
-  
+- name: Configure the  firewall
+  ufw:
+    rule: allow
+    name: "{{ item }}"
+  loop:
+    - nfs
+    - ssh
+  when: ansible_os_family == "Debian"
+  tags: configure_firewall
+
 
 
   
