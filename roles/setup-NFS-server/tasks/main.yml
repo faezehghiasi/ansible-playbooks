@@ -59,3 +59,8 @@
     - "{{ groups.nfs_client }}"
   when: server_role == 'nfsserver'
   tags: config_server_exports
+
+
+
+- name: Export NFS shares
+  command: exportfs -ra
