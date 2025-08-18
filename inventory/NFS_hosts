@@ -1,0 +1,11 @@
+[nfs_server]
+192.168.189.33 server_role=nfsserver
+
+[nfs_client]
+192.168.189.252 server_role=nfsclient
+192.168.189.10 server_role=nfsclient
+
+
+[nfs_nodes:children]
+nfs_client
+nfs_server
