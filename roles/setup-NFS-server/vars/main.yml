@@ -10,3 +10,14 @@ nfs_packages:
 nfs_server_service:
   RedHat: nfs-server
   Debian: nfs-kernel-server
+
+
+nfs_export_owner:
+  RedHat: nobody
+  Debian: nobody
+
+  
+nfs_export_group:
+  RedHat: nobody
+  Debian: nogroup
+

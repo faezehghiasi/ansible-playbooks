@@ -1,9 +1,9 @@
 [nfs_server]
-192.168.189.33 server_role=nfsserver 
+192.168.189.33 server_role=nfsserver  ansible_user=root
 
 [nfs_client]
-192.168.189.252 server_role=nfsclient
-192.168.189.10 server_role=nfsclient
+192.168.189.252 server_role=nfsclient ansible_user=root
+192.168.189.10 server_role=nfsclient ansible_user=root
 
 
 [nfs_nodes:children]

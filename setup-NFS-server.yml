@@ -1,6 +1,5 @@
 ---
 - hosts: nfs_nodes
-  become: true
   roles:
     - setup-NFS-server
 

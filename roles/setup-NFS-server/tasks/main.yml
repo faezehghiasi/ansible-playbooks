@@ -42,11 +42,11 @@
 
 - name : Create shared directory 
   file:
-    path: /nfs_dir
+    path: /shared_dir
     state: directory
     mode: '0755'
-    owner: nfsnobody
-    group: nfsnobody
+    owner: "{{ nfs_export_owner[ansible_facts['os_family']] }}"
+    group: "{{ nfs_export_group[ansible_facts['os_family']] }}"
   tags: create_shared_directory
 
 
@@ -61,6 +61,11 @@
   tags: config_server_exports
 
 
-
-- name: Export NFS shares
-  command: exportfs -ra
+- name: Configure /etc/exports on clients 
+  lineinfile:
+    line: "/data1 {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
+    path: /etc/exports
+  with_items:
+    - "{{ groups.nfs_server }}"
+  when: server_role == 'nfsclient'
+  tags: config_Client_exports
