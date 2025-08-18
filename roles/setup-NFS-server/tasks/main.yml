@@ -40,11 +40,22 @@
   tags: start_nfs_server
 
 
-- name : Create directory for NFS 
+- name : Create shared directory 
   file:
     path: /nfs_dir
     state: directory
     mode: '0755'
     owner: nfsnobody
     group: nfsnobody
-  tags: create_nfs_exports
+  tags: create_shared_directory
+
+
+
+- name: Configure /etc/exports on server
+  lineinfile:
+    line: "/data1 {{ item }}(rw,sync,no_root_squash,no_subtree_check)"
+    path: /etc/exports
+  with_items:
+    - "{{ groups.nfs_client }}"
+  when: server_role == 'nfsserver'
+  tags: config_server_exports
