@@ -1,3 +1,9 @@
 ---
-# Tasks for install-docker
-# Add your tasks here
+
+- name: Install prerequisites
+  package:
+    name: "{{ debian_prereqs if ansible_os_family == 'Debian' else redhat_prereqs }}"
+    state: present
+    update_cache: yes
+  when: ansible_os_family in ['Debian', 'RedHat']
+  tags:  install_prerequisites
