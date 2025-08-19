@@ -1,5 +1,5 @@
 ---
-- hosts: web_servers
+- hosts: docker_servers
   roles:
     - install-docker 
 
