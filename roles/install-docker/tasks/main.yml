@@ -22,3 +22,15 @@
     repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
     state: present
   when: ansible_os_family == "Debian"
+
+
+- name: Add Docker repo (RedHat/CentOS)
+  yum_repository:
+    name: docker-ce
+    description: Docker CE Stable - $basearch
+    baseurl: >-
+      https://download.docker.com/linux/centos/{{ '7' if ansible_distribution_major_version|int < 8 else ansible_distribution_major_version }}/$basearch/stable
+    gpgcheck: yes
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    enabled: yes
+  when: ansible_os_family == "RedHat"
