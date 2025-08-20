@@ -44,18 +44,9 @@
     - validation
     - setup
 
-- name: Create main project directory
-  file:
-    path: "{{ new_playbook_path }}/{{ new_playbook_name }}"
-    state: directory
-    mode: '0755'
-  tags:
-    - directories
-    - structure
-
 - name: Create inventory and roles directories
   file:
-    path: "{{ new_playbook_path }}/{{ new_playbook_name }}/{{ item }}"
+    path: "{{ new_playbook_path }}/{{ item }}"
     state: directory
     mode: '0755'
   loop:
@@ -69,7 +60,7 @@
 
 - name: Create roles subdirectories
   file:
-    path: "{{ new_playbook_path }}/{{ new_playbook_name }}/roles/{{ item }}"
+    path: "{{ new_playbook_path }}/roles/{{ new_playbook_name }}/{{ item }}"
     state: directory
     mode: '0755'
   loop: 
@@ -87,7 +78,7 @@
 
 - name: Create main playbook file
   copy:
-    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/{{ new_playbook_name }}_playbook.yml"
+    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}_playbook.yml"
     content: |
       ---
       - name: {{ new_playbook_name | title }} playbook
@@ -99,13 +90,8 @@
           # Define your variables here
           
         roles:
-          # Define your roles here
-          
-        tasks:
-          # Define your tasks here
-          - name: Example task
-            debug:
-              msg: "Hello from {{ new_playbook_name }} playbook!"
+          - role: {{ new_playbook_name }}
+
     mode: '0644'
   tags:
     - files
@@ -113,7 +99,7 @@
 
 - name: Create role main.yml files
   copy:
-    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/roles/{{ item }}/main.yml"
+    dest: "{{ new_playbook_path }}/roles/{{ new_playbook_name }}/{{ item }}/main.yml"
     content: |
       ---
       # {{ item | title }} for {{ new_playbook_name }}
@@ -131,7 +117,7 @@
 
 - name: Create inventory files
   copy:
-    dest: "{{ new_playbook_path }}/{{ new_playbook_name }}/inventory/{{ item }}"
+    dest: "{{ new_playbook_path }}/inventory/{{ item }}"
     content: |
       # {{ item | title }} inventory for {{ new_playbook_name }}
       # Add your hosts here

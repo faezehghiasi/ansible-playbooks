@@ -120,3 +120,22 @@
     msg: "Docker installed successfully: {{ docker_version.stdout }}"
   tags: display_docker_version
 
+
+- name: Test Docker with hello-world container (using command)
+  command: docker run --rm hello-world
+  register: docker_test
+  changed_when: false
+  ignore_errors: yes
+  tags: test_docker
+
+- name: Display Docker test result
+  debug:
+    msg: "Docker test completed successfully"
+  when: docker_test.rc == 0
+  tags: test_docker
+
+- name: Warning if Docker test failed
+  debug:
+    msg: "Docker test failed with error: {{ docker_test.stderr | default('Unknown error') }}"
+  when: docker_test.rc != 0
+  tags: test_docker
