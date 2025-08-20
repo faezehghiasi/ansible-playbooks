@@ -1,36 +1,122 @@
----
-
-- name: Install prerequisites
-  package:
-    name: "{{ debian_prereqs if ansible_os_family == 'Debian' else redhat_prereqs }}"
-    state: present
+- name: Update package cache (RedHat/CentOS/RHEL)
+  yum:
     update_cache: yes
-  when: ansible_os_family in ['Debian', 'RedHat']
-  tags:  install_prerequisites
+  when: ansible_os_family == "RedHat"
+  tags: update_package_cache
+
+- name: Update package cache (Debian/Ubuntu)
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+  tags: update_package_cache
+  
 
 
-- name: Add Docker GPG key (Debian)
-  apt_key:
-    url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+
+- name: Install required packages for Docker (RedHat/CentOS/RHEL)
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - curl
+      - python3-docker
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: install_required_packages
+
+- name: Install required packages for Docker (Debian/Ubuntu)
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - software-properties-common
+      - python3-docker
     state: present
   when: ansible_os_family == "Debian"
-  tags: add_docker_GPG
+  tags: install_required_packages
 
 
-- name: Add Docker repo (Debian)
-  apt_repository:
-    repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
-    state: present
-  when: ansible_os_family == "Debian"
 
 
-- name: Add Docker repo (RedHat/CentOS)
+
+- name: Add Docker CE repository (RedHat/CentOS/RHEL)
   yum_repository:
-    name: docker-ce
+    name: docker-ce-stable
     description: Docker CE Stable - $basearch
-    baseurl: >-
-      https://download.docker.com/linux/centos/{{ '7' if ansible_distribution_major_version|int < 8 else ansible_distribution_major_version }}/$basearch/stable
+    baseurl: https://download.docker.com/linux/centos/{{ ansible_distribution_major_version }}/$basearch/stable
     gpgcheck: yes
     gpgkey: https://download.docker.com/linux/centos/gpg
     enabled: yes
   when: ansible_os_family == "RedHat"
+  tags: add_docker_repository
+
+- name: Add Docker GPG key (Debian/Ubuntu)
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+  when: ansible_os_family == "Debian"
+  tags: add_GPG_key
+
+- name: Add Docker repository (Debian/Ubuntu)
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: add_docker_repository
+
+
+
+- name: Install Docker CE (RedHat/CentOS/RHEL)
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: install_docker
+
+- name: Install Docker CE (Debian/Ubuntu)
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: install_docker
+
+
+
+
+- name: Start and enable Docker service
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags: start_enable_docker
+
+
+
+- name: Verify Docker is running
+  command: docker --version
+  register: docker_version
+  changed_when: false
+  tags: verify_docker
+
+
+- name: Display Docker version
+  debug:
+    msg: "Docker installed successfully: {{ docker_version.stdout }}"
+  tags: display_docker_version
+
